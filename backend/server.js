@@ -20,6 +20,8 @@ app.get("/",(req,res)=>{
 
 app.use("/api/auth", authRoutes);
 
+import productroute from "./src/routes/product.route.js"
+app.use("/api/market",productroute)
 
  connectDB().then(()=>{
     app.listen(port,()=>{
