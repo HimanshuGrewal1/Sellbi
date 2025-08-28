@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
 			type:String,
 			enum:["buyer","seller"],
 			default:"buyer"
+		},
+		address:{
+			type:String,
+			required:true
 		}
 	},
 	{ timestamps: true }

@@ -11,8 +11,8 @@ import {
 import { User } from "../models/user.modle.js";
 
 export const signup = async (req, res) => {
-	const { email, password, name , Role} = req.body;
-
+	const { email, password, name ,address, Role} = req.body;
+console.log(email);
 	try {
 		if (!email || !password || !name) {
 			throw new Error("All fields are required");
@@ -36,6 +36,7 @@ export const signup = async (req, res) => {
 			email,
 			password: hashedPassword,
 			name,
+			address,
 			verificationToken,
 			verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
 			Role
@@ -96,6 +97,7 @@ export const verifyEmail = async (req, res) => {
 
 export const login = async (req, res) => {
 	const { email, password } = req.body;
+	console.log(email,password);
 	try {
 		const user = await User.findOne({ email });
 		if (!user) {
@@ -103,7 +105,9 @@ export const login = async (req, res) => {
 		}
 		const isPasswordValid = await bcryptjs.compare(password, user.password);
 		if (!isPasswordValid) {
+			
 			return res.status(400).json({ success: false, message: "Invalid credentials" });
+			
 		}
 
 		generateTokenAndSetCookie(res, user._id);
