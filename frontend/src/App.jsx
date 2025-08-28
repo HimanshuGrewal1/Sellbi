@@ -13,6 +13,8 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
+import ProductList from "./pages/ProductListPage";
+import ProductDetails from "./pages/ProductDetails";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -61,7 +63,15 @@ function App() {
 					path='/'
 					element={
 						  <ProtectedRoute>
-							<DashboardPage />
+							<ProductList/>
+						  </ProtectedRoute> 
+					}
+				/>
+				<Route
+					path='/product/:id'
+					element={
+						  <ProtectedRoute>
+							<ProductDetails/>
 						  </ProtectedRoute> 
 					}
 				/>

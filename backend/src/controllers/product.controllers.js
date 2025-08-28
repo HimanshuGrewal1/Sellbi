@@ -15,7 +15,7 @@ export const getProducts = async (req, res) => {
     if (search) {
       query.title = { $regex: search, $options: "i" }; 
     }
-    if(catogries){
+    if(catogry){
         query.catogry=catogry
     }
 
@@ -49,6 +49,7 @@ export const getProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   try {
+    console.log(req.params.id);
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ error: "Product not found" });
     res.json(product);
