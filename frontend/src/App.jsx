@@ -15,6 +15,9 @@ import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import ProductList from "./pages/ProductListPage";
 import ProductDetails from "./pages/ProductDetails";
+import Navbar from "./components/Navbar";
+import Aboutpage from "./pages/Aboutpage";
+import ContactPage from "./pages/ContactPage";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -63,6 +66,7 @@ function App() {
 					path='/'
 					element={
 						  <ProtectedRoute>
+							<Navbar/>
 							<ProductList/>
 						  </ProtectedRoute> 
 					}
@@ -71,7 +75,26 @@ function App() {
 					path='/product/:id'
 					element={
 						  <ProtectedRoute>
+							<Navbar/>
 							<ProductDetails/>
+						  </ProtectedRoute> 
+					}
+				/>
+				<Route
+					path='/about'
+					element={
+						  <ProtectedRoute>
+							<Navbar/>
+							<Aboutpage/>
+						  </ProtectedRoute> 
+					}
+				/>
+				<Route
+					path='/contact'
+					element={
+						  <ProtectedRoute>
+							<Navbar/>
+							<ContactPage/>
 						  </ProtectedRoute> 
 					}
 				/>

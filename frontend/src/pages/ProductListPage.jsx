@@ -24,6 +24,8 @@ import {
   LocalOffer as LocalOfferIcon
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCard } from "../store/Cart";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -33,6 +35,11 @@ const ProductList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+      const dispatch=useDispatch();
+    const handleAddToCard=(product)=>{
+      dispatch(addToCard(product))
+  
+    }
 
   const fetchProducts = async () => {
     try {
@@ -59,6 +66,7 @@ const ProductList = () => {
   };
 
   return (
+    <div className="pt-20">
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h4" fontWeight="bold" gutterBottom align="center">
         Our Products
@@ -225,10 +233,9 @@ const ProductList = () => {
                     fullWidth
                     variant="contained"
                     startIcon={<ShoppingCartIcon />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log("Add to cart", product);
-                    }}
+                  
+                         onClick={() => handleAddToCard(product)}
+                  
                     sx={{
                       borderRadius: 2,
                       background: "linear-gradient(135deg, #43a047 0%, #2e7d32 100%)",
@@ -236,6 +243,7 @@ const ProductList = () => {
                         background: "linear-gradient(135deg, #388e3c 0%, #1b5e20 100%)",
                       },
                     }}
+                 
                   >
                     Add to Cart
                   </Button>
@@ -257,6 +265,7 @@ const ProductList = () => {
         </Box>
       )}
     </Container>
+    </div>
   );
 };
 

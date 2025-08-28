@@ -25,11 +25,19 @@ import {
   FavoriteBorder as FavoriteBorderIcon
 } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCard } from "../store/Cart";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
+      const dispatch=useDispatch();
+  const handleAddToCard=(product)=>{
+    dispatch(addToCard(product))
+
+  }
+    
 
   
   const [product, setProduct] = useState(null);
@@ -90,6 +98,7 @@ const ProductDetails = () => {
 
   if (!product) {
     return (
+        <div className="pt-20"> 
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Alert severity="warning" sx={{ mb: 2 }}>
           Product not found
@@ -102,6 +111,7 @@ const ProductDetails = () => {
           Go Back
         </Button>
       </Container>
+      </div>
     );
   }
 
@@ -146,7 +156,7 @@ const ProductDetails = () => {
         />
       </Box>
 
-      {/* Reviews */}
+    
       <Box mt={3}>
         <Typography variant="h6">Reviews</Typography>
         {product.Review?.length > 0 ? (
@@ -168,7 +178,9 @@ const ProductDetails = () => {
         fullWidth
         sx={{ mt: 3, py: 1.5, borderRadius: 3 }}
         startIcon={<ShoppingCartCheckoutIcon />}
+        onClick={() => handleAddToCard(product)}
       >
+        
         Buy Now
       </Button>
     </Paper>
