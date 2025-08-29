@@ -55,7 +55,7 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <span className="text-gray-700"><Link to="/dashboard" className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
+                <span className="text-gray-700"><Link to="/profile" className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
@@ -110,7 +110,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <span className="text-gray-700"><Link to="/dashboard" className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
+                <span className="text-gray-700"><Link to="/profile" className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
                 <button
                   onClick={() => {
                     handleLogout();

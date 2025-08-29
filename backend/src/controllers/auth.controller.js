@@ -206,3 +206,35 @@ export const checkAuth = async (req, res) => {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
+
+export const updateProfile = async (req, res) => {
+	try {
+		const { name, address ,Role} = req.body;
+
+		const user = await User.findById(req.userId);
+		if (!user) {
+			return res.status(400).json({ success: false, message: "User not found" });
+		}
+
+		if (name) user.name = name;
+		if (address) user.address = address;
+		if(Role && !["buyer","seller"].includes(Role)){
+			return res.status(400).json({ success: false, message: "Invalid role" });
+		}
+		if(Role) user.Role=Role;
+
+		await user.save();
+
+		res.status(200).json({
+			success: true,
+			message: "Profile updated successfully",
+			user: {
+				...user._doc,
+				password: undefined,
+			},
+		});
+	} catch (error) {
+		console.log("Error in updateProfile ", error);
+		res.status(400).json({ success: false, message: error.message });
+	}
+}

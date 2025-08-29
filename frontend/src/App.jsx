@@ -18,6 +18,8 @@ import ProductDetails from "./pages/ProductDetails";
 import Navbar from "./components/Navbar";
 import Aboutpage from "./pages/Aboutpage";
 import ContactPage from "./pages/ContactPage";
+import ProfilePage from "./pages/ProfilePage";
+import AddProductPage from "./pages/AddProductPage";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -86,6 +88,24 @@ function App() {
 						  <ProtectedRoute>
 							<Navbar/>
 							<Aboutpage/>
+						  </ProtectedRoute> 
+					}
+				/>
+				<Route
+					path='/profile'
+					element={
+						  <ProtectedRoute>
+							<Navbar/>
+							<ProfilePage/>
+						  </ProtectedRoute> 
+					}
+				/>
+					<Route
+					path='/add-product'
+					element={
+						  <ProtectedRoute>
+							<Navbar/>
+							<AddProductPage/>
 						  </ProtectedRoute> 
 					}
 				/>

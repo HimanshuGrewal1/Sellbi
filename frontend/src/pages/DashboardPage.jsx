@@ -6,11 +6,6 @@ import { useEffect, useState } from "react";
 const DashboardPage = () => {
     const { user, logout } = useAuthStore();
 
-
-    const handleLogout = () => {
-        logout();
-    };
-
     return (
         <>
           

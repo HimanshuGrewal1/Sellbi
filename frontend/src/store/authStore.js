@@ -97,4 +97,14 @@ export const useAuthStore = create((set) => ({
 			throw error;
 		}
 	},
+	updateProfile: async (profileData) => {
+		set({ isLoading: true, error: null });
+		try {
+			const response = await axios.put(`${API_URL}/`, profileData);
+			set({ user: response.data.user, isLoading: false });
+		} catch (error) {
+			set({ error: error.response.data.message || "Error updating profile", isLoading: false });
+			throw error;
+		}
+	},
 }));

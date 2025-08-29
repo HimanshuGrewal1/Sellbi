@@ -5,14 +5,14 @@ import Swal from 'sweetalert2'
 
 
 const initialState = {
-  cardItems:[]
+  wishlist:[]
 }
 
 export const cardSlice = createSlice({
-  name: 'card',
+  name: 'wishlist',
   initialState,
   reducers: {
-       addToCart:(state,action) =>{
+       addToWishlist:(state,action) =>{
              const existingItem=state.cardItems.find(item=>item._id===action.payload._id);
              if(!existingItem){
                 state.cardItems.push(action.payload)
@@ -30,17 +30,17 @@ export const cardSlice = createSlice({
               });
              }
        },
-       removeFromCard:(state,action)=>{
+       removeFromWishlist:(state,action)=>{
           state.cardItems= state.cardItems.filter(items=>items._id!==action.payload._id)
          
        },
-       clearCard:(state)=>{
+       clearWishlist:(state)=>{
           state.cardItems=[]
        }
   },
 })
 
 
-export const {addToCart,removeFromCard,clearCard } = cardSlice.actions;
+export const {addToWishlist,removeFromWishlist,clearWishlist } = cardSlice.actions;
 
 export default cardSlice.reducer;

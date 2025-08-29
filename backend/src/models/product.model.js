@@ -46,7 +46,13 @@ const ProductSchema=new mongoose.Schema({
               comment: { type: String },
               createdAt: { type: Date, default: Date.now }
         }
-        ]
+        ],
+        images:[{
+            url:{
+                type:String,
+                required:true
+            }
+        }],
 
 },{
     timestamps:true
