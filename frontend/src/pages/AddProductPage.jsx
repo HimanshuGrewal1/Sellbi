@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -18,12 +18,11 @@ import {
   InputAdornment,
   IconButton,
   useTheme,
-  FormHelperText
+  FormHelperText,
+  LinearProgress
 } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
-  Add as AddIcon,
-  Remove as RemoveIcon,
   Delete as DeleteIcon,
   CloudUpload as CloudUploadIcon
 } from "@mui/icons-material";
@@ -33,20 +32,20 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   
-  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     actualPrice: "",
-    discount: "",
+    discount: "0",
     category: "",
     stock: "",
   });
   
-  const [images, setImages] = useState([])
-  const [URL,SetURL]=useState([])
-  const [errors, setErrors] = useState({})
-  const [submitStatus, setSubmitStatus] = useState({ success: null, message: "" })
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [submitStatus, setSubmitStatus] = useState({ success: null, message: "" });
+  const [uploading, setUploading] = useState(false);
 
   const categories = [
     "Electronics",
@@ -59,6 +58,12 @@ const AddProduct = () => {
     "Automotive"
   ];
 
+  // Clean up object URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
+    };
+  }, [imagePreviews]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +71,6 @@ const AddProduct = () => {
       ...formData,
       [name]: value
     });
-    
 
     if (errors[name]) {
       setErrors({
@@ -76,7 +80,6 @@ const AddProduct = () => {
     }
   };
 
- 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     
@@ -88,25 +91,51 @@ const AddProduct = () => {
         });
         return false;
       }
+      
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setSubmitStatus({
+          success: false,
+          message: "Image size should be less than 5MB"
+        });
+        return false;
+      }
+      
       return true;
     });
     
+    // Create preview URLs for the new images
+    const newPreviews = validImages.map(file => URL.createObjectURL(file));
+    
     setImages([...images, ...validImages]);
+    setImagePreviews([...imagePreviews, ...newPreviews]);
+    
+    // Clear any previous image errors
+    if (errors.images) {
+      setErrors({
+        ...errors,
+        images: ""
+      });
+    }
   };
 
- 
   const handleRemoveImage = (index) => {
+    // Revoke the object URL to prevent memory leaks
+    URL.revokeObjectURL(imagePreviews[index]);
+    
     const newImages = [...images];
     newImages.splice(index, 1);
     setImages(newImages);
+    
+    const newPreviews = [...imagePreviews];
+    newPreviews.splice(index, 1);
+    setImagePreviews(newPreviews);
   };
 
- 
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.title) newErrors.title = "Product title is required";
-    if (!formData.description) newErrors.description = "Description is required";
+    if (!formData.title.trim()) newErrors.title = "Product title is required";
+    if (!formData.description.trim()) newErrors.description = "Description is required";
     if (!formData.actualPrice || formData.actualPrice <= 0) newErrors.actualPrice = "Valid price is required";
     if (formData.discount < 0) newErrors.discount = "Discount cannot be negative";
     if (!formData.category) newErrors.category = "Category is required";
@@ -117,18 +146,30 @@ const AddProduct = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-   const uploadImage = async (image) => {
+  const uploadImage = async (image) => {
     const data = new FormData();
     data.append("file", image);
-    data.append("upload_preset", "67763c15-c1b0-49bd-83ff-ce0d717e8c80"); 
-    data.append("cloud_name", "Sellbi"); 
+    data.append("upload_preset", "Sellbi"); 
+    data.append("cloud_name", "dm2j3voev"); 
 
-    const res=await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
-      method: "POST",
-      body: data,
-    })
-       const result = await res.json();
-  return result.secure_url;
+    try {
+      const res = await fetch("https://api.cloudinary.com/v1_1/dm2j3voev/image/upload", {
+        method: "POST",
+        body: data,
+      });
+      
+      if (!res.ok) {
+        throw new Error("Image upload failed");
+      }
+      
+      const result = await res.json();
+      console.log(result);
+      return result.secure_url;
+      
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -143,35 +184,44 @@ const AddProduct = () => {
     }
     
     try {
-    
-      const uploadedUrls = await Promise.all(images.map((img) => uploadImage(img)));
+      setUploading(true);
       
-      
-      
-         const submitData = {
-      ...formData,
-      images: uploadedUrls, 
-    };
    
-        
-    
-      console.log("Submitting product data:", submitData);
-          await fetch("http://localhost:5000/api/market/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(submitData),
-    });
- 
+      const uploadedUrls = await Promise.all(
+        images.map((img) => uploadImage(img))
+      );
+      
+      
+      const submitData = {
+        ...formData,
+        actualPrice: parseFloat(formData.actualPrice),
+        discount: parseFloat(formData.discount || 0),
+        stock: parseInt(formData.stock),
+        images: uploadedUrls,
+      };
+      
+     
+      const response = await fetch("http://localhost:5000/api/market/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submitData),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to add product");
+      }
+      
+  
       setFormData({
         title: "",
         description: "",
         actualPrice: "",
-        discount: "",
+        discount: "0",
         category: "",
         stock: "",
-        images:""
       });
       setImages([]);
+      setImagePreviews([]);
       setErrors({});
       
       setSubmitStatus({
@@ -189,14 +239,13 @@ const AddProduct = () => {
         success: false,
         message: "Error adding product. Please try again."
       });
+    } finally {
+      setUploading(false);
     }
   };
 
-
-
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-
       <Box sx={{ mb: 3 }}>
         <Button 
           startIcon={<ArrowBackIcon />} 
@@ -214,7 +263,6 @@ const AddProduct = () => {
         </Typography>
       </Box>
 
-     
       {submitStatus.message && (
         <Alert 
           severity={submitStatus.success ? "success" : "error"} 
@@ -226,7 +274,6 @@ const AddProduct = () => {
       )}
 
       <Grid container spacing={4}>
- 
         <Grid item xs={12} md={7}>
           <Paper sx={{ p: 4, borderRadius: 2 }}>
             <Typography variant="h6" gutterBottom>
@@ -289,7 +336,7 @@ const AddProduct = () => {
                     value={formData.discount}
                     onChange={handleInputChange}
                     error={!!errors.discount}
-                    helperText={errors.discount || "Optional"}
+                    helperText={errors.discount || "Optional - enter 0 for no discount"}
                     InputProps={{
                       startAdornment: <InputAdornment position="start">₹</InputAdornment>,
                     }}
@@ -328,14 +375,13 @@ const AddProduct = () => {
                   />
                 </Grid>
                 
-                
                 <Grid item xs={12}>
                   <Box>
                     <Typography variant="body1" gutterBottom>
                       Product Images
                     </Typography>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
-                      Upload at least one image of your product
+                      Upload at least one image of your product (Max 5MB each)
                     </Typography>
                     
                     <Button
@@ -343,8 +389,9 @@ const AddProduct = () => {
                       component="label"
                       startIcon={<CloudUploadIcon />}
                       sx={{ mt: 1, mb: 2 }}
+                      disabled={images.length >= 5}
                     >
-                      Upload Images
+                      Upload Images ({images.length}/5)
                       <input
                         type="file"
                         hidden
@@ -361,11 +408,11 @@ const AddProduct = () => {
                     )}
                     
                     <Grid container spacing={1}>
-                      {images.map((image, index) => (
-                        <Grid item xs={4} key={index}>
+                      {imagePreviews.map((preview, index) => (
+                        <Grid item xs={4} sm={3} key={index}>
                           <Box sx={{ position: 'relative' }}>
                             <img
-                              src={URL.createObjectURL(image)}
+                              src={preview}
                               alt={`Preview ${index + 1}`}
                               style={{
                                 width: '100%',
@@ -380,7 +427,10 @@ const AddProduct = () => {
                                 position: 'absolute',
                                 top: 4,
                                 right: 4,
-                                backgroundColor: 'rgba(255,255,255,0.8)'
+                                backgroundColor: 'rgba(255,255,255,0.8)',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(255,255,255,1)',
+                                }
                               }}
                               onClick={() => handleRemoveImage(index)}
                             >
@@ -394,11 +444,21 @@ const AddProduct = () => {
                 </Grid>
                 
                 <Grid item xs={12}>
+                  {uploading && (
+                    <Box sx={{ width: '100%', mb: 2 }}>
+                      <LinearProgress />
+                      <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+                        Uploading images and creating product...
+                      </Typography>
+                    </Box>
+                  )}
+                  
                   <Button
                     type="submit"
                     variant="contained"
                     size="large"
                     fullWidth
+                    disabled={uploading}
                     sx={{
                       py: 1.5,
                       backgroundColor: '#FF6B6B',
@@ -407,7 +467,7 @@ const AddProduct = () => {
                       }
                     }}
                   >
-                    Add Product
+                    {uploading ? 'Processing...' : 'Add Product'}
                   </Button>
                 </Grid>
               </Grid>
