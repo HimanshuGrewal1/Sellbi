@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Badge,
   Typography,
   Chip,
   Divider,
@@ -89,7 +90,7 @@ const ProductDetails = () => {
       try {
         await navigator.share({
           title: product.title,
-          text: product.description,
+          text: product.Description,
           url: window.location.href,
         });
       } catch (err) {
@@ -349,7 +350,7 @@ const ProductDetails = () => {
             </Box>
 
             <Typography variant="body1" paragraph sx={{ color: 'text.primary', lineHeight: 1.6 }}>
-              {product.description}
+              {product.Description}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -462,7 +463,7 @@ const ProductDetails = () => {
         <Box sx={{ py: 3 }}>
           {tabValue === 0 && (
             <Typography variant="body1" sx={{ lineHeight: 1.8 }}>
-              {product.fullDescription || product.description || "No description available."}
+              {product.fullDescription || product.Description || "No Description available."}
             </Typography>
           )}
           

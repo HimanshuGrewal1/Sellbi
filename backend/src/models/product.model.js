@@ -48,10 +48,10 @@ const ProductSchema=new mongoose.Schema({
         }
         ],
         images:[{
-            url:{
+            
                 type:String,
                 required:true
-            }
+            
         }],
 
 },{

@@ -34,7 +34,7 @@ const AddProduct = () => {
   
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
+    Description: "",
     actualPrice: "",
     discount: "0",
     category: "",
@@ -135,7 +135,7 @@ const AddProduct = () => {
     const newErrors = {};
     
     if (!formData.title.trim()) newErrors.title = "Product title is required";
-    if (!formData.description.trim()) newErrors.description = "Description is required";
+    if (!formData.Description.trim()) newErrors.Description = "Description is required";
     if (!formData.actualPrice || formData.actualPrice <= 0) newErrors.actualPrice = "Valid price is required";
     if (formData.discount < 0) newErrors.discount = "Discount cannot be negative";
     if (!formData.category) newErrors.category = "Category is required";
@@ -205,6 +205,7 @@ const AddProduct = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submitData),
+         credentials: "include" 
       });
       
       if (!response.ok) {
@@ -214,7 +215,7 @@ const AddProduct = () => {
   
       setFormData({
         title: "",
-        description: "",
+        Description: "",
         actualPrice: "",
         discount: "0",
         category: "",
@@ -302,11 +303,11 @@ const AddProduct = () => {
                     multiline
                     rows={4}
                     label="Description"
-                    name="description"
-                    value={formData.description}
+                    name="Description"
+                    value={formData.Description}
                     onChange={handleInputChange}
-                    error={!!errors.description}
-                    helperText={errors.description || "Describe your product in detail"}
+                    error={!!errors.Description}
+                    helperText={errors.Description || "Describe your product in detail"}
                     placeholder="Include key features, specifications, and benefits"
                   />
                 </Grid>

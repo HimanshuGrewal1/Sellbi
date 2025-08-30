@@ -61,14 +61,19 @@ export const getProductById = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
+   
     const user = await User.findById(req.userId)
+     
     if(user.Role!='seller'){
+     
         return res.status(400).json({ success: false, message: "You are not a seller " });
     }
+
     const product = new Product({...req.body,Seller:req.userId});
     await product.save();
     res.status(201).json(product);
   } catch (err) {
+   
     res.status(400).json({ error: err.message });
   }
 };
