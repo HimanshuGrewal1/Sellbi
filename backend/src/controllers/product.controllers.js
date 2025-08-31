@@ -4,9 +4,9 @@ import { User } from "../models/user.modle.js";
 
 export const getProducts = async (req, res) => {
    try {
-    let { search, catogry,page, limit } = req.query;
+    let { search, category,page, limit } = req.query;
 
-   
+   console.log(category)
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
 
@@ -15,17 +15,18 @@ export const getProducts = async (req, res) => {
     if (search) {
       query.title = { $regex: search, $options: "i" }; 
     }
-    if(catogry){
-        query.catogry=catogry
+    if(category){
+        query.category=category
     }
 
-  
+  console.log(query);
     const skip = (page - 1) * limit;
    
     const products = await Product.find(query)
       .skip(skip)
       .limit(limit)
         .sort({ createdAt: -1 }); ;
+        console.log(products);
 
   
      const total = await Product.countDocuments(query);
@@ -96,7 +97,10 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   try {
+    console.log(req.params.id, req.userId);
    const product = await Product.findOneAndDelete({ _id: req.params.id, Seller: req.userId });
+ 
+    
 
     if (!product) return res.status(404).json({ error: "Product not found" });
     res.json({ message: "Product deleted" });
@@ -121,4 +125,15 @@ export const addComment = async (req, res) => {
 
 
 
+}
+
+export const getProductsOfSeller=async(req,res)=>{
+    try {
+
+        const products = await Product.find({ Seller: req.userId }).sort({ createdAt: -1 });
+        console.log(products);
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
 }

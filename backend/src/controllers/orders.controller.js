@@ -1,5 +1,8 @@
+import { sendOrderConfirmationEmail } from "../Email/emails.js";
 import { Cart } from "../models/Cart.model.js";
 import { Order } from "../models/order.model.js";
+import crypto from 'crypto';
+import { User } from "../models/user.modle.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -11,11 +14,28 @@ export const createOrder = async (req, res) => {
     });
     await newOrder.save();
     Cart.findByIdAndDelete(CartId).then(()=>{
-        console.log("Cart cleared after order creation");
+       
     }).catch((err)=>{
         console.error("Error clearing cart:", err);
     });
-    res.status(201).json(newOrder);
+    const user = await User.findById(req.userId);
+   await sendOrderConfirmationEmail(user.email, newOrder).catch(err => {
+      console.error("Error sending order confirmation email:", err);
+    });
+    const responseBody = JSON.stringify(newOrder);
+
+
+    const secret = process.env.SEED; 
+    const hmac = crypto.createHmac('sha256', secret);
+    hmac.update(responseBody);
+    const signature = hmac.digest('base64'); 
+
+
+    res.set('X-Signature', signature);
+
+   
+    res.status(201).send(responseBody);
+   
   }
     catch (error) {
     res.status(500).json({ message: 'Server error', error });

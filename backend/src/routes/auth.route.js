@@ -9,6 +9,7 @@ import {
 	checkAuth,
 	updateProfile,
 	updateWishlist,
+	getWishlist,
 } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 
@@ -26,4 +27,5 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 router.put("/",verifyToken,updateProfile)
 router.post("/wishlist/:productId",verifyToken,updateWishlist)
+router.get("/wishlist",verifyToken,getWishlist)
 export default router;

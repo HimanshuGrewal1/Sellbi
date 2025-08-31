@@ -33,7 +33,7 @@ const ProductList = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `http://localhost:5000/api/market/products?search=${search}&category=${category}&page=${page}&limit=8`
+        `${import.meta.env.VITE_API_URL}/api/market/products?search=${search}&category=${category}&page=${page}&limit=8`
       );
       const data = await res.json();
       setProducts(data.data || []);
@@ -88,9 +88,9 @@ const ProductList = () => {
             sx={{ minWidth: { xs: '100%', sm: 200 } }}
           >
             <MenuItem value="">All Categories</MenuItem>
-            <MenuItem value="electronics">Electronics</MenuItem>
-            <MenuItem value="fashion">Fashion</MenuItem>
-            <MenuItem value="books">Books</MenuItem>
+            <MenuItem value="Electronics">Electronics</MenuItem>
+            <MenuItem value="Fashion">Fashion</MenuItem>
+            <MenuItem value="Books">Books</MenuItem>
           </TextField>
         </Box>
 

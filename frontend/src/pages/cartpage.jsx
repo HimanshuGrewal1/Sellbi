@@ -36,7 +36,7 @@ const CartPage = () => {
     const fetchCartItems = async () => {  
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/cart', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const CartPage = () => {
     
     try {
       setUpdating(true);
-      const response = await fetch('http://localhost:5000/api/cart/update', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const CartPage = () => {
   const removeItem = async (productId) => {
     try {
       setUpdating(true);
-      const response = await fetch('http://localhost:5000/api/cart/remove', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart/remove`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const CartPage = () => {
     const handlecheckOut = async () => {
     try {
         setUpdating(true);
-        const response = await fetch('http://localhost:5000/api/order/create', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/order/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

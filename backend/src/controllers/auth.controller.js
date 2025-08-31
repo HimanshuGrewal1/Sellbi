@@ -248,7 +248,7 @@ export const updateWishlist = async (req, res) => {
 		}
 		console.log(user);
 		 console.log(productId);
-		// Toggle product in wishlist
+	
 		const index = user.Wishlist.indexOf(productId);
 		if (index === -1) {
 			user.Wishlist.push(productId);
@@ -269,3 +269,19 @@ export const updateWishlist = async (req, res) => {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
+
+export const getWishlist = async (req, res) => {
+	try {
+		const user = await User.findById(req.userId).populate('Wishlist');
+		if (!user) {
+			return res.status(400).json({ success: false, message: "User not found" });
+		}
+		res.status(200).json({
+			success: true,
+			wishlist: user.Wishlist
+		});
+	} catch (error) {
+		console.log("Error in getWishlist ", error);
+		res.status(400).json({ success: false, message: error.message });
+	}
+}

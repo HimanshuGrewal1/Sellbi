@@ -5,9 +5,17 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
 import authRoutes from "./src/routes/auth.route.js";
+import { logRequest } from "./src/middlewares/log.js";
 
 const app = express();
 dotenv.config()
+app.use(logRequest);
+
+const router=express.Router()
+
+import systemRoutes from './src/routes/log.route.js';
+app.use(systemRoutes);
+
 
 
 const port=process.env.PORT || 8000
@@ -29,6 +37,10 @@ app.use("/api/cart",cartroute)
 
 import orderroute from "./src/routes/order.route.js"
 app.use("/api/order",orderroute)
+
+app.use("/IIT2024230/healthz", (req, res) => {
+  res.status(200).send('Backend is Alive');
+});
 
  connectDB().then(()=>{
     app.listen(port,()=>{

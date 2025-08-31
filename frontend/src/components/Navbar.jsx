@@ -5,7 +5,8 @@ import { Menu, X } from "lucide-react";
 
 const navItems = [
   { name: "Home", link: "/" },
-  { name: "Pagination", link: "/pagination" },
+  { name: "DashBoard", link: "/dashboard" },
+  {name:"CheckOut", link:"/cart"},
   { name: "About", link: "/about" },
   { name: "Contact", link: "/contact" },
 ];
@@ -17,6 +18,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
   };
+  console.log(user);
 
   return (
     <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
@@ -55,7 +57,7 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <span className="text-gray-700"><Link to="/profile" className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
+                <span className="text-gray-700"><Link to={user.Role=="seller"?"/seller" :"/profile"}className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
@@ -110,7 +112,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <span className="text-gray-700"><Link to="/profile" className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
+                <span className="text-gray-700"><Link to={user.Role=="seller"?"/seller" :"/profile"} className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Hello, {user.name}</Link></span>
                 <button
                   onClick={() => {
                     handleLogout();

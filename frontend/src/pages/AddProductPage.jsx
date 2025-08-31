@@ -58,7 +58,7 @@ const AddProduct = () => {
     "Automotive"
   ];
 
-  // Clean up object URLs when component unmounts
+ 
   useEffect(() => {
     return () => {
       imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
@@ -92,7 +92,7 @@ const AddProduct = () => {
         return false;
       }
       
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) { 
         setSubmitStatus({
           success: false,
           message: "Image size should be less than 5MB"
@@ -103,13 +103,13 @@ const AddProduct = () => {
       return true;
     });
     
-    // Create preview URLs for the new images
+   
     const newPreviews = validImages.map(file => URL.createObjectURL(file));
     
     setImages([...images, ...validImages]);
     setImagePreviews([...imagePreviews, ...newPreviews]);
     
-    // Clear any previous image errors
+ 
     if (errors.images) {
       setErrors({
         ...errors,
@@ -119,7 +119,7 @@ const AddProduct = () => {
   };
 
   const handleRemoveImage = (index) => {
-    // Revoke the object URL to prevent memory leaks
+   
     URL.revokeObjectURL(imagePreviews[index]);
     
     const newImages = [...images];
@@ -201,7 +201,7 @@ const AddProduct = () => {
       };
       
      
-      const response = await fetch("http://localhost:5000/api/market/add", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/market/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submitData),

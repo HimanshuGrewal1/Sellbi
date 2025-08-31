@@ -21,6 +21,7 @@ import ContactPage from "./pages/ContactPage";
 import ProfilePage from "./pages/ProfilePage";
 import AddProductPage from "./pages/AddProductPage";
 import CartPage from "./pages/cartpage";
+import SellerPage from "./pages/SellerPage";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -93,6 +94,15 @@ function App() {
 					}
 				/>
 				<Route
+					path='/dashboard'
+					element={
+						  <ProtectedRoute>
+							<Navbar/>
+							<DashboardPage/>
+						  </ProtectedRoute> 
+					}
+				/>
+				<Route
 					path='/profile'
 					element={
 						  <ProtectedRoute>
@@ -125,6 +135,15 @@ function App() {
 						  <ProtectedRoute>
 							<Navbar/>
 							<CartPage/>
+						  </ProtectedRoute> 
+					}
+				/>
+				<Route
+					path='/seller'
+					element={
+						  <ProtectedRoute>
+							<Navbar/>
+							<SellerPage/>
 						  </ProtectedRoute> 
 					}
 				/>

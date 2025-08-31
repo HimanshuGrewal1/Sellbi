@@ -85,7 +85,7 @@ useEffect(() => {
 
   const handleAddToCart = async (product) => {
     try {
-      const res= await fetch("http://localhost:5000/api/cart/add",{
+      const res= await fetch(`${import.meta.env.VITE_API_URL}/api/cart/add`,{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
@@ -102,7 +102,7 @@ useEffect(() => {
 
   const handleWishlistToggle = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/auth/wishlist/${product._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/wishlist/${product._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json", 
@@ -143,7 +143,7 @@ useEffect(() => {
 
   const handleReviewSubmit = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/market/comment/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/market/comment/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json", 
@@ -172,7 +172,7 @@ useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:5000/api/market/product/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/market/product/${id}`);
         
         if (!res.ok) {
           throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
@@ -245,7 +245,7 @@ useEffect(() => {
     ? product.images 
     : [];
 
-    console.log(productImages);
+  const averageRating= product.Review.length > 0 ? (product.Review.reduce((sum, r) => sum + r.rating, 0) / product.Review.length) : 0;
 
   return (
     <div className="pt-20">
@@ -345,7 +345,7 @@ useEffect(() => {
               </Typography>
               
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Rating value={product.averageRating || 0} precision={0.5} readOnly />
+                <Rating value={averageRating || 0} precision={0.5} readOnly />
                 <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
                   ({product.Review?.length || 0} reviews)
                 </Typography>

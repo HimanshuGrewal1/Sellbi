@@ -75,3 +75,19 @@ export const sendResetSuccessEmail = async (email) => {
     throw new Error(`Error sending password reset success email: ${error.message}`);
   }
 };
+
+
+export const sendOrderConfirmationEmail = async (email, orderDetails) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `"${sender.name}" <${sender.email}>`,
+      to: email,
+      subject: "Order Confirmation",
+      html: `<h1>Thank you for your order!</h1><p>Your order details: ${JSON.stringify(orderDetails)}</p>`,
+    }); 
+    console.log("Order confirmation email sent:", info.messageId);
+    } catch (error) {
+    console.error("Error sending order confirmation email:", error);
+    throw new Error(`Error sending order confirmation email: ${error.message}`);  
+  }
+};
