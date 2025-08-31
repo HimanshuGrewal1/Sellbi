@@ -8,6 +8,7 @@ import {
 	resetPassword,
 	checkAuth,
 	updateProfile,
+	updateWishlist,
 } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 
@@ -24,5 +25,5 @@ router.post("/forgot-password", forgotPassword);
 
 router.post("/reset-password/:token", resetPassword);
 router.put("/",verifyToken,updateProfile)
-
+router.post("/wishlist/:productId",verifyToken,updateWishlist)
 export default router;

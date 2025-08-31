@@ -104,3 +104,21 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 }
+
+export const addComment = async (req, res) => {
+   try {
+    console.log(req.body);
+    const { rating, comment } = req.body;
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ error: "Product not found" });
+    product.Review.push({ user: req.userId, rating, comment });
+    await product.save();
+    res.status(201).json(product);
+   } catch (err) {
+    console.error("Error in addComment controller:", err);
+    res.status(500).json({ error: err.message });
+   }
+
+
+
+}

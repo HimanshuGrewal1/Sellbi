@@ -1,5 +1,5 @@
 import express from "express"
-import { createProduct, deleteProduct, getProductById, getProducts, updateProduct } from "../controllers/product.controllers.js"
+import { addComment, createProduct, deleteProduct, getProductById, getProducts, updateProduct } from "../controllers/product.controllers.js"
 import { verifyToken } from "../middlewares/verifyToken.js";
 
 
@@ -11,5 +11,7 @@ router.get("/product/:id",getProductById)
 router.post("/add",verifyToken,createProduct)
 router.put("/update/:id",updateProduct)
 router.delete("/delete/:id",deleteProduct)
+router.post("/comment/:id",verifyToken,addComment)
+
 
 export default router;

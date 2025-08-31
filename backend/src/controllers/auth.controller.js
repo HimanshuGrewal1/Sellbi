@@ -238,3 +238,34 @@ export const updateProfile = async (req, res) => {
 		res.status(400).json({ success: false, message: error.message });
 	}
 }
+
+export const updateWishlist = async (req, res) => {
+	try {
+		const { productId } = req.params;
+		const user = await User.findById(req.userId);
+		if (!user) {
+			return res.status(400).json({ success: false, message: "User not found" });
+		}
+		console.log(user);
+		 console.log(productId);
+		// Toggle product in wishlist
+		const index = user.Wishlist.indexOf(productId);
+		if (index === -1) {
+			user.Wishlist.push(productId);
+		} else {
+			user.Wishlist.splice(index, 1);
+		}
+		await user.save();
+		console.log(user);
+		console.log(productId);
+
+		res.status(200).json({
+			success: true,
+			message: "Wishlist updated successfully",
+			wishlist: user.Wishlist
+		});
+	} catch (error) {
+		console.log("Error in updateWishlist ", error);
+		res.status(400).json({ success: false, message: error.message });
+	}
+};
