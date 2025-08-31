@@ -21,7 +21,7 @@ export const addToCart = async (req, res) => {
     }
     const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
     if (itemIndex > -1) {
-      cart.items[itemIndex].quantity = quantity;
+      cart.items[itemIndex].quantity += quantity;
     } else {
       cart.items.push({ product: productId, quantity });
     }
@@ -37,11 +37,13 @@ export const updateCartItem = async (req, res) => {
     try {
         const { itemId } = req.body;
         const { quantity } = req.body;
+        console.log("Updating item:", itemId, "to quantity:", quantity);
         const cart = await Cart.findOne({ user: req.userId });
+        console.log("Current cart:", cart);
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        const itemIndex = cart.items.findIndex(item => item._id.toString() === itemId);
+        const itemIndex = cart.items.findIndex(item => item.product._id.toString() === itemId);
         if (itemIndex === -1) {
             return res.status(404).json({ message: 'Item not found in cart' });
         }
@@ -56,12 +58,13 @@ export const updateCartItem = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
     try {
-        const { itemId } = req.body;
+        const { productId } = req.body;
+
         const cart = await Cart.findOne({ user: req.userId });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        const itemIndex = cart.items.findIndex(item => item._id.toString() === itemId);
+        const itemIndex = cart.items.findIndex(item => item.product._id.toString() === productId);
         if (itemIndex === -1) {
             return res.status(404).json({ message: 'Item not found in cart' });
         }

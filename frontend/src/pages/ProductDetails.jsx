@@ -47,7 +47,6 @@ import {
 } from "@mui/icons-material";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../store/Cart";
 import { useAuthStore } from "../store/authStore";
 
 const ProductDetails = () => {
@@ -69,12 +68,18 @@ const ProductDetails = () => {
   const [tabValue, setTabValue] = useState(0);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [isWishlisted, setIsWishlisted] = useState(false);
- useEffect(() => {
-    if (user && user.wishlist) {
-      setWishlistItems(user.wishlist);
-      setIsWishlisted(user.wishlist.some(item => item._id === id));
-    }
-  }, [user, id]);
+useEffect(() => {
+  if (user && user.Wishlist) {
+    console.log("User wishlist:", user.Wishlist);
+
+
+
+    const isInWishlist = user.Wishlist.some(item => item._id === id || item === id);
+    setIsWishlisted(isInWishlist);
+
+  }
+}, [user, id]);
+
 
   
 
@@ -364,7 +369,7 @@ const ProductDetails = () => {
 
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h4" color="primary.main" fontWeight="bold">
-                  ₹{discountPrice.toLocaleString()}
+                  ${discountPrice.toLocaleString()}
                 </Typography>
                 {product.discount > 0 && (
                   <>
@@ -373,7 +378,7 @@ const ProductDetails = () => {
                       sx={{ textDecoration: "line-through", ml: 2 }}
                       color="text.secondary"
                     >
-                      ₹{product.actualPrice.toLocaleString()}
+                      ${product.actualPrice.toLocaleString()}
                     </Typography>
                     <Chip 
                       label={`${discountPercentage}% OFF`} 

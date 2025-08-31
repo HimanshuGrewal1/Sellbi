@@ -27,6 +27,9 @@ app.use("/api/market",productroute)
 import cartroute from "./src/routes/cart.route.js"
 app.use("/api/cart",cartroute)
 
+import orderroute from "./src/routes/order.route.js"
+app.use("/api/order",orderroute)
+
  connectDB().then(()=>{
     app.listen(port,()=>{
     console.log(`Server is runing at port ${port}`)

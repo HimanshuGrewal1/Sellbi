@@ -30,6 +30,7 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [cartId,SetCartId]=useState();
 
   useEffect(() => {
     const fetchCartItems = async () => {  
@@ -49,6 +50,7 @@ const CartPage = () => {
         
         const data = await response.json();
         setCartItems(data.items || []);
+        SetCartId(data._id)
       } catch (error) {
         console.error('Failed to fetch cart items:', error);
         setCartItems([]);
@@ -60,23 +62,23 @@ const CartPage = () => {
     fetchCartItems();
   }, []);
 
-  const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity < 1) return;
+  const updateQuantity = async (itemId, quantity) => {
+    if (quantity < 1) return;
     
     try {
       setUpdating(true);
-      const response = await fetch('http://localhost:5000/api/cart', {
+      const response = await fetch('http://localhost:5000/api/cart/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ productId, quantity: newQuantity })
+        body: JSON.stringify({ itemId, quantity: quantity })
       });
       
       if (response.ok) {
         setCartItems(cartItems.map(item => 
-          item.product._id === productId ? { ...item, quantity: newQuantity } : item
+          item.product._id === itemId ? { ...item, quantity: quantity } : item
         ));
       }
     } catch (error) {
@@ -89,7 +91,7 @@ const CartPage = () => {
   const removeItem = async (productId) => {
     try {
       setUpdating(true);
-      const response = await fetch('http://localhost:5000/api/cart', {
+      const response = await fetch('http://localhost:5000/api/cart/remove', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -108,13 +110,39 @@ const CartPage = () => {
     }
   };
 
-  // Calculate totals correctly
+    const handlecheckOut = async () => {
+    try {
+        setUpdating(true);
+        const response = await fetch('http://localhost:5000/api/order/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                items: cartItems,
+                price: cartItems.reduce((sum, item) => sum + ((item.product.actualPrice-item.product.discount) * item.quantity), 0),
+                CartId: cartId
+            })
+        })
+        if(response.ok){
+            setCartItems([]);
+            navigate('/orders');
+        }
+
+    } catch(err){
+        console.error('Checkout failed:', err);
+
+    }
+}
+
+ 
   const subtotal = cartItems.reduce((sum, item) => {
-    return sum + (item.product.actualPrice * item.quantity);
+    return sum + ((item.product.actualPrice-item.product.discount) * item.quantity);
   }, 0);
-  
+  const SEED=230
   const shipping = subtotal > 0 ? 5.99 : 0;
-  const tax = subtotal * 0.08;
+  const tax = subtotal * (SEED%10);
   const total = subtotal + shipping + tax;
 
   if (loading) {
@@ -212,7 +240,7 @@ const CartPage = () => {
                             {item.product.category}
                           </Typography>
                           <Typography variant="body1" color="primary" fontWeight="bold" sx={{ mt: 1 }}>
-                            ${item.product.actualPrice}
+                            ${item.product.actualPrice-item.product.discount}
                           </Typography>
                         </Grid>
                         <Grid item xs={6} sm={3} sx={{ textAlign: 'center' }}>
@@ -253,7 +281,7 @@ const CartPage = () => {
                         </Grid>
                         <Grid item xs={4} sm={2} sx={{ textAlign: 'right' }}>
                           <Typography variant="h6" fontWeight="bold">
-                            ${(item.product.actualPrice * item.quantity).toFixed(2)}
+                            ${((item.product.actualPrice-item.product.discount) * item.quantity).toFixed(2)}
                           </Typography>
                           <IconButton 
                             size="small" 
@@ -332,6 +360,7 @@ const CartPage = () => {
                 variant="contained"
                 size="large"
                 disabled={cartItems.length === 0 || updating}
+                onClick={() => handlecheckOut()}
                 sx={{ 
                   borderRadius: 2,
                   py: 1.5,
