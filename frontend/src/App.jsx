@@ -22,6 +22,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AddProductPage from "./pages/AddProductPage";
 import CartPage from "./pages/cartpage";
 import SellerPage from "./pages/SellerPage";
+import RecentLogs from "./components/RecentLog";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -84,6 +85,16 @@ function App() {
 						  </ProtectedRoute> 
 					}
 				/>
+					<Route
+					path='/IIT2024230/healthz'
+					element={
+						 
+							<h1>Frontend Alive!</h1>
+			  
+					}
+				/>
+				<Route path="/logs/recent" element={<RecentLogs />} />
+
 				<Route
 					path='/about'
 					element={
