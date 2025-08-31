@@ -65,7 +65,7 @@ const SellerProfile = () => {
         setSeller(user);
 
         
-        const productsResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/market/seller/products`, {
+        const productsResponse = await fetch(`https://sellbi.onrender.com/api/market/seller/products`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ const SellerProfile = () => {
     // if (!window.confirm('Are you sure you want to delete this product?')) return;
     console.log('Deleting product with ID:', productId);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/market/delete/${productId}`, {
+      const response = await fetch(`https://sellbi.onrender.com/api/market/delete/${productId}`, {
         method: 'DELETE', 
         headers: {
           'Content-Type': 'application/json',

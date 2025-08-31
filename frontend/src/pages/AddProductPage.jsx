@@ -201,7 +201,7 @@ const AddProduct = () => {
       };
       
      
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/market/add`, {
+      const response = await fetch(`https://sellbi.onrender.com/api/market/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(submitData),

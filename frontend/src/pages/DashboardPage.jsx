@@ -95,7 +95,7 @@ const DashboardPage = () => {
     const fetchUserData = async () => {
       setLoading(true);
       try {
-         const wishlistResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/wishlist`, {
+         const wishlistResponse = await fetch(`https://sellbi.onrender.com/api/auth/wishlist`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ const DashboardPage = () => {
         }
 
        
-        const ordersResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
+        const ordersResponse = await fetch(`https://sellbi.onrender.com/api/order`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ const DashboardPage = () => {
   const removeFromWishlist = async (productId) => {
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api//auth/wishlist/${productId}`, {
+      const response = await fetch(`https://sellbi.onrender.com/api//auth/wishlist/${productId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

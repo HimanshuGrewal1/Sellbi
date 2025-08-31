@@ -85,7 +85,7 @@ useEffect(() => {
 
   const handleAddToCart = async (product) => {
     try {
-      const res= await fetch(`${import.meta.env.VITE_API_URL}/api/cart/add`,{
+      const res= await fetch(`https://sellbi.onrender.com/api/cart/add`,{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
@@ -102,7 +102,7 @@ useEffect(() => {
 
   const handleWishlistToggle = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/wishlist/${product._id}`, {
+      const res = await fetch(`https://sellbi.onrender.com/api/auth/wishlist/${product._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json", 
@@ -143,7 +143,7 @@ useEffect(() => {
 
   const handleReviewSubmit = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/market/comment/${id}`, {
+      const res = await fetch(`https://sellbi.onrender.com/api/market/comment/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json", 
@@ -172,7 +172,7 @@ useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/market/product/${id}`);
+        const res = await fetch(`https://sellbi.onrender.com/api/market/product/${id}`);
         
         if (!res.ok) {
           throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
